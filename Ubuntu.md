@@ -120,8 +120,8 @@ chmod 777 文件/文件夹：添加 所有权限
 ## man/help
 
 查询命令帮助文档
-> man 外部命令   
-help 内部项目
+> ~$ man 外部命令   
+~$ help 内部项目
 
 ## Shared folder
 进入VMware的共享文件夹
@@ -143,6 +143,5 @@ help 内部项目
 > 退出并保存   
 执行命令，使配置生效生效   
 ~$ source ~/.bashrc   
-
 > 查看是否配置成功   
 ~$ java -version
