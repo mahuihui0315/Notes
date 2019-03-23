@@ -127,7 +127,7 @@ chmod 777 文件/文件夹：添加 所有权限
 进入VMware的共享文件夹
 > ~$ cd /mnt/hgfs/
 
-## JDK configuration
+## JDK Configuration
 配置jdk
 > 下载linux版本jdk并解压到需要的文件夹   
 执行命令，打开.bashrc  
@@ -145,3 +145,61 @@ chmod 777 文件/文件夹：添加 所有权限
 ~$ source ~/.bashrc   
 > 查看是否配置成功   
 ~$ java -version
+
+## MySQL Installation
+
+卸载旧版本MySQL	
++ 执行卸载语句
+> ~$ sudo apt autoremove --purge mysql-server   
+~$ sudo apt remove mysql-common
+
++ 清除数据
+> ~$ dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 
+
+安装新版MySQL
++ 在MySQL官网下载最新版deb文件
+> ~$ sudo dpkg -i mysql-apt-config_xxx.deb   
++ 更新软件库
+> ~$ sudo apt update
++ 安装MySQL服务器
+> ~$ sudo apt install mysql-server
+
+重设默认密码
++ 寻找debian.cnf文件
+> ~$ sudo vim /etc/mysql/debian.cnf   
++ 记录默认用户名及密码，并登陆mysql，执行以下语句
+> show databases;   
+use mysql;   
+update user set authentication_string=PASSWORD("自定义密码") where user='root';   
+update user set plugin="mysql_native_password";   
+flush privileges;   
+quit;   
++ 重启MySQL
+> ~$ /etc/init.d/mysql restart
++ 使用修改后的root用户名及密码登陆
+
+## Tomcat Installation
+
+安装Tomcat
++ Tomcat官网下载需要的版本，并解压
+> ~$ sudo tar -zxvf apache-tomcat-xxx.tar.gz
++ 进入安装目录下的bin目录下执行以下语句
+> ~$ sudo vim startup.sh   
+> 若拒绝进入，则修改文件夹权限   
+>> ~$ sudo chmod 755 -R apache-tomcat-xxx
++ 打开文件之后在最后一行之前添加以下内容
+> ```
+> #set java environment
+> export JAVA_HOME=xxx
+> export JRE_HOME=${JAVA_HOME}/jre
+> export CLASSPATH=.:%{JAVA_HOME}/lib:%{JRE_HOME}/lib
+> export PATH=${JAVA_HOME}/bin:$PATH
+> 
+> #tomcat
+> export TOMCAT_HOME=xxx/apache-tomcat-xxx
+> ```
++ 保存并退出
++ 执行语句开启Tomcat(bin)
+> sudo ./startup
+
++ 在浏览器访问localhost：8080验证是否成功
