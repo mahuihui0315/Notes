@@ -99,11 +99,11 @@ $ ./shellTest.sh
 -f：使用档名
 
 常用命令组合
-> zxvf：解压
->> $ tar -zxvf 路径名/压缩包名   
++ zxvf：解压
+> $ tar -zxvf 路径名/压缩包名   
 
-> zcvf：压缩   
->> $ tar -zcvf 路经名/压缩包名 路径名/文件名 
++ zcvf：压缩   
+> $ tar -zcvf 路经名/压缩包名 路径名/文件名 
 
 ## chmod
 change mode：变更文件权限
@@ -213,4 +213,5 @@ Ubuntu默认是国外源，下载速度太慢，可以更改为国内源
 + 更新源
 > $ sudo apt update
 + 更新软件
-+ $ sudo apt upgrade
+
+> $ sudo apt upgrade
