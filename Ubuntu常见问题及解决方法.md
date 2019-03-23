@@ -14,14 +14,14 @@
 ## Package * is not available, but is referred to by another package
 + 原因：ubuntu的/etc/apt/source.list中的源比较旧，需要更新
 + 解决方法：更新源
-> ~$ sudo apt-get -y update
+> $ sudo apt-get -y update
 
 ## The remote system refused the connection
 
 + 使用SecureCRT链接linux报错，系统拒绝链接
 + 原因：linux未安装openssh-server
 + 解决方法：安装openssh-server
-> 1. 安装openssh-server：~$ sudo apt-get install openssh-server
-> 2. 查看是否成功：~$ ps -e | grep ssh
-> 3. 手动开启ssh：~$ ssh start
+> 1. 安装openssh-server：$ sudo apt-get install openssh-server
+> 2. 查看是否成功：$ ps -e | grep ssh
+> 3. 手动开启ssh：$ ssh start
 
