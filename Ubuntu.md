@@ -52,9 +52,11 @@
 > ~$ cp -rf 源路径 目标路径
 
 ## move
+移动文件
+> ~$ mv 源路径 目标路径  
 
-~$ mv 源路径 目标路径
-
+重命名   
+> ~$ mv -f 路径名/旧文件名  路径名/新文件名
 ## vim
 
 新建或打开文件   
@@ -84,3 +86,63 @@ esc退出插入模式
 将目标文件变为可执行文件，成功之后会变成绿色   
 ~$ ./shellTest.sh
 
+## find
+寻找指定指定前缀的文件
+> find 路径 -name "filename*"
+
+## tar
+文件压缩命令
+> -c：压缩   
+-x：解压   
+-z：使用gzip   
+-v：显示过程文件   
+-f：使用档名
+
+常用命令组合
+> zxvf：解压
+>> ~$ tar -zxvf 路径名/压缩包名   
+
+> zcvf：压缩   
+>> ~$ tar -zcvf 路经名/压缩包名 路径名/文件名 
+
+## chmod
+change mode：变更文件权限
++ 权限标识
+> r：可读，值为4   
+w：可写，值为2   
+x：可执行，值为1   
+-：无权限，值为0
+
++ 权限更改
+> chmod u-rwx   
+chmod g-rwx   
+chmod 777 文件/文件夹：添加 所有权限    
+## man/help
+
+查询命令帮助文档
+> man 外部命令   
+help 内部项目
+
+## Shared folder
+进入VMware的共享文件夹
+> ~$ cd /mnt/hgfs/
+
+## JDK configuration
+配置jdk
+> 下载linux版本jdk并解压到需要的文件夹   
+执行命令，打开.bashrc  
+~$ sudo gedit ~/.bashrc   
+添加以下内容到最后面   
+> ```
+> # The PATH of jdk1.8.0_201   
+> export JAVA_HOME=jdk的解压路径   
+> export JRE_HOME=${JAVA_HOME}/jre   
+> export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib   
+> export PATH=${JAVA_HOME}/bin:$PATH
+> ```   
+> 退出并保存   
+执行命令，使配置生效生效   
+~$ source ~/.bashrc   
+
+> 查看是否配置成功   
+~$ java -version
