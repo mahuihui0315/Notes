@@ -122,3 +122,20 @@ quit;
 
 *若报错：You need tcl 8.5 or newer in order to run the Redis test*
 + 缺少tcl
+> $ sudo apt install tcl
++ 运行redis-server   
+> $ cd src   
+$ ./redis-server   
++ 运行redis-cli
+> $ ./redis-cli
++ 测试redis   
+> 输入ping，回车   
+PONG
+
+**配置文件**
++ 开机自启
+> 进入redis安装目录   
+$ cd xxx/redis   
+打开配置文件   
+$ sudo vim redis.conf   
+找到daemonize no，更改为daemonize yes
