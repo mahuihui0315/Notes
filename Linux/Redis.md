@@ -170,39 +170,6 @@ config set stop-writes-on-bgsave-error no
 + linsert：指定位置插入元素
 > linsert listname before/after pivot value
 
-**set**
-
-+ sadd：创建新的set
-> sadd setname value1 value ...（重复的值只会存储一个）
-
-+ smembers：获取set中的值
-> smembers setname
-
-+ scard：获取set中的元素个数
-> scard setname
-
-+ srem：删除set中的指定元素
-> srem setname value
-
-+ srandmember：随机抽取指定数量的元素
-> srandmember setname nums
-
-+ spop：随机出栈一个元素
-> spop setnameconfig
-
-+ smove：将源sey中的一个值移动到目标set
-> smove source destination value
-
-*数学集合类*
-+ sdiff：差集，第一个set中存在而后面set中不存在
-> sdiff setname1 setname2 setname3 ...
-
-+ sinter：交集，同时存在在所有set中的元素
-> sinter setname1 setname2 setname3 ...
-
-+ sunion：并集，所有set中的所有元素
-> sunion setname1 setname2 setname3 ...
-
 **hash**
 + hest：创建hash
 > hset keyname fieldname value
@@ -241,6 +208,40 @@ hmget keyname fieldname1 fieldname2 ...
 + hsetnx：不存在就增加
 > hsetnx keyname fieldname
 
+**set**
+
++ sadd：创建新的set
+> sadd setname value1 value ...（重复的值只会存储一个）
+
++ smembers：获取set中的值
+> smembers setname
+
++ scard：获取set中的元素个数
+> scard setname
+
++ srem：删除set中的指定元素
+> srem setname value
+
++ srandmember：随机抽取指定数量的元素
+> srandmember setname nums
+
++ spop：随机出栈一个元素
+> spop setnameconfig
+
++ smove：将源sey中的一个值移动到目标set
+> smove source destination value
+
+*数学集合类*
++ sdiff：差集，第一个set中存在而后面set中不存在
+> sdiff setname1 setname2 setname3 ...
+
++ sinter：交集，同时存在在所有set中的元素
+> sinter setname1 setname2 setname3 ...
+
++ sunion：并集，所有set中的所有元素
+> sunion setname1 setname2 setname3 ...
+
+
 **zset**
  
 + zadd：创建zset
@@ -264,3 +265,33 @@ zrangebyscore keyname min (max ：不包括最大值
 
 + zrevrange：逆序查询
 > zrevrange keyname startIndex endIndex
+
+## 消息订阅和发布
+
+**subscribe**
++ 订阅一个频道，接收其他操作者发布的信息
+> subscribe channelname(单个订阅)   
+psubscribe channel*(多个订阅)
+
+
++ 发布一个消息xxx
+> publish channelname "xxx"
+
+## 事务
+
+1. 所有的命令都是串行化按顺序执行   
+2. 事务执行期间不会执行其他客户端的请求   
+3. 一条命令执行失败，其他命令不会继续执行(redis5.0.4)
+
+**multi**
+
++ 开启事务
+> multi
+
++ 关闭事务
+> exec
+
++ 回滚   
+   + 手动执行回滚   
+   + 提交时遇到错误自动执行
+> discard
