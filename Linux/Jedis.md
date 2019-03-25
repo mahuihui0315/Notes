@@ -46,6 +46,9 @@ sunion(key1,key2)|返回并集
 
 + 创建jedis链接池工具类
 ```
+/**
+ * JedisPool工具类，用于提供配置好链接的Jedis对象
+ */
 public class JedisUtil {
     public JedisUtil(){};
     private static JedisPool jedisPool;
@@ -56,10 +59,11 @@ public class JedisUtil {
 
     static {
         try {
+            //获取配置文件数据
             Properties properties = new Properties();
-            InputStream is = new FileInputStream("src/redis.properties");
+            InputStream is = new FileInputStream("D:\\IntelliJ IDEA\\Project\\Redis\\src\\jedis.properties");
             properties.load(is);
-
+            //根据配置文件数据设置参数
             maxTotal = Integer.parseInt(properties.getProperty("maxTotal"));
             maxWaitMillis = Integer.parseInt(properties.getProperty("maxWaitMillis"));
             host = properties.getProperty("host");
@@ -70,16 +74,25 @@ public class JedisUtil {
     }
 
     static {
+        //配置JedisPool
         JedisPoolConfig jedisPoolConfig=new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(maxTotal);
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
         jedisPool=new JedisPool(jedisPoolConfig,host,port);
     }
 
+    /**
+     * 返回一个配置好链接的Jedis对象
+     * @return
+     */
     public static Jedis getJedis(){
         return jedisPool.getResource();
     }
 
+    /**
+     * 关闭链接释放资源
+     * @param jedis 需要关闭的Jedis
+     */
     public static void close(Jedis jedis){
         if (jedis!=null){
             jedis.close();
@@ -87,3 +100,25 @@ public class JedisUtil {
     }
 }
 ```
++ 配置文件格式   
+> maxTotal=100(最大连接数)   
+maxWaitMillis=3000(链接超时时间)   
+host=192.168.137.129(redis所在主机ip)   
+port=6379(端口号)
+
+
+## 遇到问题及解决方法
+
+**java.lang.NoClassDefFoundError: org/slf4j/LoggerFactory**   
+
+原因：缺少slf4j-api.jar   
+解决方法：下载并导入
+
+**DENIED Redis is running in protected mode because protected mode is enabled, 
+no bind address was specified, no authentication password is requested to clients. 
+In this mode connections are only accepted from the loopback interface.**
+
+原因：redis访问被拒绝   
+解决方法：
+> 1. 更改配置文件，注释掉本机ip绑定 bind 127.0.0.1，然后将protected-mode 改为no
+> 2. 运行redis，输入CONFIG SET protected-mode no，临时将保护模式关闭

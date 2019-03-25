@@ -35,7 +35,9 @@
 > 强制关闭Redis快照导致不能持久化
 
 + 解决方法：
-> 打开redis，运行以下命令   
+> 1. 打开redis，运行以下命令   
+config set stop-writes-on-bgsave-error no
+> 2. 打开配置文件 修改   
 config set stop-writes-on-bgsave-error no
 ---
 
