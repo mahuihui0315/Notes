@@ -1,1 +1,1 @@
-Here are some notes about hibernate
+Here are some notes，java files and xml files about  hibernate
