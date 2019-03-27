@@ -103,7 +103,7 @@ public class JedisUtil {
 + 配置文件格式   
 > maxTotal=100(最大连接数)   
 maxWaitMillis=3000(链接超时时间)   
-host=192.168.137.129(redis所在主机ip)   
+host=192.xxx.xxx.xxx(redis所在主机ip)   
 port=6379(端口号)
 
 
