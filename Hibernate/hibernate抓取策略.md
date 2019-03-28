@@ -1,0 +1,21 @@
+# hibernate抓取策略
+## set设置fetch和lazy
++ fetch：控制SQL语句格式
+   + select：默认值，发送SQL的普通select语句，查询关联对象
+   + join：发送迫切左外连接查询关联对象
+   + subselect：发送子查询查询关联对象   
++ lazy：控制查询关联对象时是否使用延迟加载
+   + true：默认值，采用延迟加载
+   + false：不采用延迟加载
+   + extra：及其懒惰
++ 实际开发一般采用默认值
+## many-to-one设置fetch和lazy
++ fetch：控制SQL语句格式
+   + select：默认值，发送SQL的普通select语句，查询关联对象
+   + join：发送迫切左外连接查询关联对象
++ lazy：控制查询关联对象时是否使用延迟加载
+   + proxy：默认值，具体值取决于另一个类的配置文件的class标签的lazy属性
+   + false：不采用延迟加载
+   + no-proxy：（不会使用该值）
+## 批量抓取
+一次查询一批对象
