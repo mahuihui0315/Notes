@@ -1,1 +1,1 @@
-A directory for spring note and code
+A directory for spring notes and code
