@@ -138,5 +138,14 @@ public class JunitTest {
     </aop:aspect>
 </aop:config>
 ```
+### advice类型
++ 前置：在目标方法执行之前进行操作
+> 获得切入点信息   
+`<aop:before method="checkCar" pointcut-ref="pointcut1"/>`
++ 后置：在目标方法执行之后进行操作
+> 获得方法的返回值   
 
-
++ 环绕：在目标方法执行之前和之后操作
++ 异常抛出：在程序出现异常的时候进行操作
++ 最终：无论程序是否有异常总会执行
++ 引介：
