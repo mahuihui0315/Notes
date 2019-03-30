@@ -1,5 +1,5 @@
 # spring的AOP的xml开发
-**简介：** Aspect Oriented Programming，面向切面编程，通过预编译方式和运行期动态
+**AOP简介：** Aspect Oriented Programming，面向切面编程，通过预编译方式和运行期动态
 代理实现程序功能的统一维护的一种技术，是OOP的延续，Spring框架中的一个重要内容
 ## 为什么使用AOP
 在不修改源代码的情况下增强功能
@@ -9,6 +9,7 @@
 + 事务控制
 + ...
 ## AOP的底层实现
+
 ### JDK动态代理
 + 接口及实现类
 ```
@@ -70,4 +71,72 @@ public class TestProxy {
         proxyUser.update();
     }
 }
-``
+```
+
+### Cglib动态代理
+
+## spring的基于AspectJ的AOP开发
+
+### 相关术语
++ Joinpoint：连接点
+> 所有可以被拦截，被增强的点，都是连接点
++ Pointcut：切入点
+> 实际被拦截，增强的点
++ Advice：通知
+> 对切入点的增强方法被称为通知或增强
++ Introduction：引介
+> 类层面的增强
++ Target：目标
+> 被增强的对象
++ Weaving：织入
+> 将通知（advice）应用到目标（target）的过程
++ Aspect：切面
+> 多个通知和切入点的组合
+
+### spring整合junit测试
+```
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:applicationContext.xml")
+public class JunitTest {
+    @Resource(name="car")
+    private Car car;
+
+    @Test
+    public void test(){
+        car.start();
+        car.stop();
+    }
+}
+```
+### 添加必须jar
++ aopalliance-1.0.jar
++ aspectjrt-1.8.10.jar
++ aspectjweaver-1.8.10.jar
+
+### 添加约束
+> `xmlns:aop="http://www.springframework.org/schema/aop"`
+
+> ```
+> http://www.springframework.org/schema/aop
+> http://www.springframework.org/schema/aop/spring-aop.xsd
+> ```
+
+### 配置格式
+```
+<!-- 将target交给spring管理 -->
+<bean id="car" class="com.spring.aop.AspectJ_demo.CarImpl"/>
+<!-- 将aspect交给spring管理 -->
+<bean id="myAspect" class="com.spring.aop.AspectJ_demo.MyAspect"/>
+<!-- 配置weaving -->
+<aop:config>
+    <!-- 配置pointcut -->
+    <aop:pointcut id="pointcut1" expression="execution(* com.spring.aop.AspectJ_demo.CarImpl.start(..))"/>
+    <!-- 配置advice -->
+    <aop:aspect ref="myAspect">
+        <aop:before method="checkCar" pointcut-ref="pointcut1"/>
+        <!--<aop:after method="fixCar" pointcut-ref="car"/>-->
+    </aop:aspect>
+</aop:config>
+```
+
+
