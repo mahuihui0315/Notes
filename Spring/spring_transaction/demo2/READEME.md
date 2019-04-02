@@ -1,6 +1,5 @@
-## demo1下的java文件实现了编程式spring事务管理
+## demo2下的java文件实现了声明式事务管理——xml方式
 + AccountDao和AccountDaoImpl为数据层
 + AccountServie和AccountServiceImpl为业务层
-+ AccountServiceImpl中实现了编程式事务管理代码
 + DemoTest为测试文件
 + applicationContext为配置文件
