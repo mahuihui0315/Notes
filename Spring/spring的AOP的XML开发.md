@@ -143,9 +143,18 @@ public class JunitTest {
 > 获得切入点信息   
 `<aop:before method="checkCar" pointcut-ref="pointcut1"/>`
 + 后置：在目标方法执行之后进行操作
-> 获得方法的返回值   
+> 获得方法的返回值  
+`<aop:after method="fixCar" pointcut-ref="pointcut2"/>` 
 
 + 环绕：在目标方法执行之前和之后操作
+> 性能监控   
+`<aop:around method="checkRoad" pointcut-ref="pointcut3"/>`
 + 异常抛出：在程序出现异常的时候进行操作
 + 最终：无论程序是否有异常总会执行
 + 引介：
+
+### pointcut语法格式
++ 基于execution的函数
++ 访问修饰符 方法返回值 包名.类名.方法名(参数)
+   + public void com.spring.method(..)
+   + (public可省略)*(*代表任意)  com.spring.method(..)

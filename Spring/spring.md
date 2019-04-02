@@ -1,4 +1,4 @@
-# Spring
+# Spring入门
 ## IOC(Inversion of Control)
 **简介：** 将对象的创建交给spring
 
@@ -98,3 +98,83 @@ has a（创建新类时，更推荐使用）
 > 单例模式，默认
 + scope="prototype"
 > 多例模式
+
+## 属性注入
+### 构造方法
+```
+<bean id="daoImpl" class="com.spring.Dao.DaoImpl" init-method="setup" destroy-method="destroy">
+    <constructor-arg name="name" value="spike"/>
+</bean>
+```
+
+### set方法
+```
+<bean id="daoImpl" class="com.spring.Dao.DaoImpl" init-method="setup" destroy-method="destroy">
+    <property name="name" value="spike"/>
+</bean>
+```
+
+### p名称空间
++ 引入p名称空间
+> beans标签添加 xmlns:p="http://www.springframework.org/schema/p"
+
++ 普通属性
+> bean标签添加属性 p:name="value"
+
++ 对象属性
+> bean标签添加属性 p:name-ref="object"
+
+### SpEL(Spring Expression Language)
++ 基本格式
+> `<property nmae="" value="#{SpEL}">`
++ SpEL语法
+   + `#{int}`
+   + `#{float}`
+   + `#{'string'}`
+   + `#{object}`
+   + `#{method(object)}`
+
+## 集合类型的属性注入
+bean标签内新建property标签
++ 数组集合
+> ```
+> <property name="arrayname">
+>   <list>
+>     <value>value</value>
+>     <value>value</value>
+>     ...
+>  </list>
+> </property>
+> ```
++ list集合
+> ```
+> <property name="listname">
+>   <list>
+>     <value>value1</value>
+>     <value>value2</value>
+>     <ref>Object</ref>
+>     ...
+>  </list>
+> </property>
+> ```
++ set集合
+> ```
+> <property name="setname">
+>   <set>
+>     <value>value1</value>
+>     <value>value2</value>
+>     <ref>Object</ref>
+>     ...
+>  </set>
+> </property>
+> ```
++ map集合
+> ```
+> <property name="mapname">
+>   <map>
+>     <entry key="" value=""/>
+>     <entry key="" value=""/>
+>     ...
+>  </map>
+> </property>
+> ```
