@@ -1,0 +1,4 @@
+demo1下的java文件实现了编程式spring事务管理
+AccountDao和AccountDaoImpl为数据层
+AccountServie和AccountServiceImpl为业务层
+AccountServiceImpl中实现了编程式事务管理代码
