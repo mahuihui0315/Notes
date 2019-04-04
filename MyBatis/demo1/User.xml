@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+    <!-- id查询 -->
+    <select id="getUserById" parameterType="int" resultType="com.mybatis.demo1.User">
+            select * from user where id=#{id}
+    </select>
+
+    <!-- 姓名查询 -->
+    <!--<select id="getUserByName" parameterType="String" resultType="com.mybatis.demo1.User">
+        select * from user where username like #{username}
+    </select>-->
+
+    <!-- 姓名查询 -->
+    <select id="getUserByName" parameterType="String" resultType="com.mybatis.demo1.User">
+        select  * from user where username like '%${value}%'
+    </select>
+    
+    <!-- 添加 -->
+    <insert id="insertUser" parameterType="com.mybatis.demo1.User">
+        insert into user(username, gender, phone, address) values (#{username},#{gender},#{phone},#{address})
+    </insert>
+
+    <!--  -->
+    <insert id="insertUserId" parameterType="com.mybatis.demo1.User" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into user(username, gender, phone, address) values (#{username},#{gender},#{phone},#{address})
+    </insert>
+
+    <update id="updateUser" parameterType="com.mybatis.demo1.User">
+        update user set address=#{address} where id=#{id}
+    </update>
+
+    <delete id="deleteUserById" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+</mapper>
