@@ -175,4 +175,192 @@ public interface UserDao {
     ...
 </mapper>
 ```
+## 输入输出映射
+### parameterType
++ 简单类型
+   + int
+   + string
+   + ...
++ pojo对象
+   + ... 
++ 包装pojo对象
+```
+public void test07(){
+    QueryVo queryVo=new QueryVo();
+    User user=new User();
+    user.setUsername("A2");
+    queryVo.setUser(user);
+    User result=sqlSession.selectOne("getUserByQueryVo",queryVo);
+    System.out.println(result.getUsername());
+}
+```
+```
+<select id="getUserByQueryVo" parameterType="com.mybatis.demo1.QueryVo" resultType="com.mybatis.demo1.User" >
+    select * from  user where username like '%${user.username}%'
+</select>
+```
+### resultType
++ 简单类型
+   + int
+   + string
+   + ...
++ pojo对象
+   + ...
++ pojo对象集合
+   + ...
++ resultMap
+```
+<!-- resultMap使用 -->
+<resultMap id="userMap" type="com.mybatis.demo1.User">
+    <!-- id标签用于绑定主键 -->
+    <id property="id" column="id"/>
+    <!-- result标签用于绑定普通字段 -->
+    <!-- 若类中的属性和对应字段名相同可省略 -->
+    <result property="username" column="username"/>
+    <result property="gender" column="gender"/>
+</resultMap>
+<select id="getUserResultMap" parameterType="int" resultMap="userMap">
+    select * from user where id=#{id}
+</select>
+```
 
+## 动态sql
+### if
+```
+<select id="getUserByWhere" parameterType="com.mybatis.demo1.User" resultType="com.mybatis.demo1.User">
+    select * from user where 1=1
+    <if test="id!=null">
+        and id=#{id}
+    </if>
+    <if test="username!=null and username!='' ">
+        and username like '%${username}%'
+    </if>
+</select>
+```
+
+### where
+```
+<select id="getUserByWhere2" parameterType="com.mybatis.demo1.User" resultType="com.mybatis.demo1.User">
+    select * from user
+        <where >
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="username!=null and username!='' ">
+                and username like '%${username}%'
+            </if>
+        </where>
+</select>
+```
+
+### foreach
+```
+<select id="getUserByIds" parameterType="com.mybatis.demo1.QueryVo" resultType="com.mybatis.demo1.User">
+    select * from user
+    <where>
+        <foreach collection="ids" open="id in(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </where>
+</select>
+```
+
+### sql片段
++ sql片段定义
+```
+<sql id="user_column">
+    id,username,gender,phone,address
+</sql>
+```
++ sql片段使用
+```
+<select id="getUserByIdSql" parameterType="com.mybatis.demo1.User" resultType="com.mybatis.demo1.User">
+    select
+    <include refid="user_column"/>
+    from  user
+    <where>
+        <if test="id!=null">
+            id=#{id}
+        </if>
+    </where>
+</select>
+```
+## 关联查询
+
+### 一对一查询
+**注：** 新建order类与前面的user类进行一对一关联  
+ 
+**resultMap实现**
++ order类
+> user_id为表order的外键指向user表的id   
+user引用指向id为user_id的对象
+```
+public class Order {
+    private Integer id;
+    private Integer user_id;
+    private String number;
+    private Date createtime;
+    private String note;
+    private User user;
+    get/set...	
+}
+```
+
++ 接口动态代理
+```
+public interface OrderMap{
+    List<Order> getOrderListMap();
+    ...
+}
+```
+
++ 配置文件
+```
+<!-- 一对一关联查询：resultMap实现 -->
+<resultMap id="order_user_map" type="com.mybatis.demo3.Order">
+    <!-- 主键映射 -->
+    <id property="id" column="id"/>
+    <!-- 普通字段映射 -->
+    <result property="user_id" column="user_id"/>
+    <result property="number" column="number"/>
+    <result property="createtime" column="createtime"/>
+    <result property="note" column="note"/>
+    <!--
+        配置关联对象user
+        property：order类中的user对象名
+        javaType：user类的路径
+    -->
+    <association property="user" javaType="com.mybatis.demo3.User">
+        <id property="id" column="id"/>
+
+        <result property="username" column="username"/>
+        <result property="address" column="address"/>
+    </association>
+</resultMap>
+```
+```
+<select id="getOrderUserMap" resultMap="order_user_map">
+    SELECT
+      o.`id`,
+      o.`user_id`,
+      o.`number`,
+      o.`createtime`,
+      o.`note`,
+      u.username,
+      u.address
+    FROM
+      `order` o
+      LEFT JOIN `user` u
+        ON u.id = o.user_id
+</select>
+```
++ 测试类
+```
+public void test03(){
+    OrderMapper orderMapper=sqlSession.getMapper(OrderMapper.class);
+    List<Order> list=orderMapper.getOrderUserMap();
+    for (Order order:list) {
+        System.out.println(order.toString());
+    }
+}
+```
