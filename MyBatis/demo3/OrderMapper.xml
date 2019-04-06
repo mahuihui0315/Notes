@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.demo3.OrderMapper">
+
+    <!-- 获取order列表:resultType -->
+    <select id="getOrderList" resultType="com.mybatis.demo3.Order">
+		SELECT
+		  `id`,
+		  `user_id`,
+		  `number`,
+		  `createtime`,
+		  `note`
+		FROM `order`
+    </select>
+
+    <!-- OrderMap -->
+    <resultMap id="OrderListMap" type="com.mybatis.demo3.Order">
+        <!-- 主键映射 -->
+        <id property="id" column="id"/>
+        <!-- 普通字段映射 -->
+        <result property="user_id" column="user_id"/>
+        <!-- 名称相同直接省略普通字段 -->
+    </resultMap>
+    <!-- 获取order列表:resultMap -->
+    <select id="getOrderListMap" resultMap="OrderListMap">
+		SELECT
+		  `id`,
+		  `user_id`,
+		  `number`,
+		  `createtime`,
+		  `note`
+		FROM `order`
+    </select>
+
+    <!-- 一对一关联查询：resultMap实现 -->
+    <resultMap id="order_user_map" type="com.mybatis.demo3.Order">
+        <!-- 主键映射 -->
+        <id property="id" column="id"/>
+        <!-- 普通字段映射 -->
+        <result property="user_id" column="user_id"/>
+        <result property="number" column="number"/>
+        <result property="createtime" column="createtime"/>
+        <result property="note" column="note"/>
+        <!--
+            配置关联对象user
+            property：order类中的user对象名
+            javaType：user类的路径
+        -->
+        <association property="user" javaType="com.mybatis.demo3.User">
+            <id property="id" column="id"/>
+
+            <result property="username" column="username"/>
+            <result property="address" column="address"/>
+        </association>
+    </resultMap>
+    <select id="getOrderUserMap" resultMap="order_user_map">
+        SELECT
+          o.`id`,
+          o.`user_id`,
+          o.`number`,
+          o.`createtime`,
+          o.`note`,
+          u.username,
+          u.address
+        FROM
+          `order` o
+          LEFT JOIN `user` u
+            ON u.id = o.user_id
+    </select>
+
+</mapper>
