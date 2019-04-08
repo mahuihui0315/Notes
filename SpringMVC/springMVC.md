@@ -125,3 +125,229 @@ Model model=new Model();
 model.addAttribute("name",value);
 return "xxx";
 ```
+
+## RequestMapping参数绑定
+
+### 默认支持的参数类型
++ HttpServletRequest
++ HttpServletResponse
++ HttpSession
+```
+@RequestMapping("itemEdit")
+public ModelAndView itemEdit(HttpServletRequest request,HttpServletResponse response,HttpSession session){
+    ModelAndView mav = new ModelAndView();
+    ...
+}
+```
+### 简单参数绑定
++ @RequestParam(value="",required=true,defaultValue=)Object obj
+   + value：实参名
+   + required：参数是否必须
+   + defaultValue：默认值
+> 实参名与形参名不一致时使用   
+```
+@RequestMapping("itemEdit")
+public ModelAndView itemEdit(@RequestParam(value="id",required=true,defaultValue=1)Integer ids){
+    ModelAndView mav = new ModelAndView();
+    ...
+}
+```
+
+### Model/ModelMap
++ Model
+```
+@RequestMapping("itemEdit")
+public String itemEdit(@RequestParam("id")Integer ids,Model m,ModelMap model){
+    Item item = itemServices.getItemById(ids);
+    model.addAttribute("item", item);
+    return "itemEdit";
+}
+```
+
+### pojo对象
+**注：** 表单提交的属性名必须与pojo一致
+```
+@RequestMapping("updateItem")
+public String updateItem(Item item,Model model){
+    itemServices.update(item);
+    model.addAttribute("item", item);
+    return "itemEdit";
+}
+```
+
+### 数组类型的参数绑定
++ 提交多个属性名一致的变量会自动包装成数组
+```
+<c:forEach items="${itemList }" var="item">
+    <tr>
+        <td><input type="checkbox" name="ids" value="${item.id}"></td>
+        ...
+    </tr>
+</c:forEach>
+```
+
+### List类型的参数绑定
++ jsp修改
+   + forEach新加varStatus属性，用于获取列表的index
+   + name由item.xxx，改为`items[${status,index}].xxx`
+   + 点击提交时，所有item会封装到items集合中
+```
+<c:forEach items="${itemList }" var="item" varStatus="status">
+    <tr>
+        <input type="hidden" name="items[${status.index}].id" value="${item.id}">
+        <input type="text" name="items[${status.index}].name" value="${item.name}">
+    </td>
+    <td><input type="text" name="items[${status.index}].price" value="${item.price}"></td>
+    ...
+</c:forEach>
+```
+## @RequestMapping注解使用
+
+### 映射路径数组
+一个方法可以与多个url建立映射关系
+```
+@RequestMapping(value={"itemList","itemList2",...})
+
+```
+### url分级管理
+将注解添加到类的头部，则相当于将方法映射url放在类映射url的下一级目录   
+```
+@RequestMapping(value="item")
+public class ItemController{
+    @RequestMapping(value="getItem")
+    public String getItem(...){
+        ...
+    }
+    ...
+}
+```
+### 限定方法的请求方式
+只有menthod属性中标注的请求方式才会被接收
+```
+@RequestMapping(value = "queryItem",method = {RequestMethod.POST,RequestMethod.GET})
+```
+
+## 全局转换器
++ 用于转换对象的不同格式
+### 时间格式转换器
++ 新建DateConvert实现Convert
++ 本例为String转换为Date格式，输入参数为String和Date
+```
+public class DateConvert implements Converter<String, Date> {
+    @Override
+    public Date convert(String source) {
+        try {
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return simpleDateFormat.parse(source);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+```
++ 核心配置文件中声明
+```
+<!-- 使用自定义转换器 -->
+<mvc:annotation-driven conversion-service="conversionService2"/>
+<!-- 定义转换器：spring无法转换时间格式，需要自定义 -->
+<bean id="conversionService2" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    <property name="converters">
+        <list>
+            <bean class="com.springMVC.demo1.utils.DateConvert"/>
+        </list>
+    </property>
+</bean>
+```
+
+## SpringMVC的异常处理
+
+### 全局异常处理器
++ 新建一个异常处理类实现HandlerExceptionResolver
+```
+public class ExceptionResolver implements HandlerExceptionResolver {
+    @Override
+    public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception e) {
+        //记录日志
+        e.printStackTrace();
+        //异常消息
+        String result="系统异常";
+        //异常判断，是否为自定义异常
+        if (e instanceof  MyException)
+            result=e.getMessage();
+        //将异常信息响应给用户
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.addObject("message",result);
+        modelAndView.setViewName("exception");
+        return modelAndView;
+    }
+}
+```
++ 在核心配置文件中声明
+```
+<!-- 配置全局异常处理器 -->
+<bean class="com.springMVC.demo1.exception.ExceptionResolver"/>
+```
+
+### 自定义异常类
++ 新建类继承Exception
+```
+public class MyException extends Exception {
+    private String message;
+    public MyException(){
+        super();
+    }
+    public MyException(String message){
+        super();
+        this.message=message;
+    }
+    get/set...
+}
+```
+
+## 图片上传
+
+### 导入jar
++ commons-fileuploa
++ commons-io
+
+### 配置多媒体解析器
++ 核心配置文件中添加bean标签
+```
+<!-- 配置多媒体解析器 -->
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <!-- 上传文件最大值 -->
+    <property name="maxUploadSize" value="8388608"/>
+</bean>
+```
+
+### 图片上传页面
++ form标签中添加属性
+
+`enctype="multipart/form-data"`
++ input标签类型为file   
+
+`<input type="file"  name="pictureFile"/>`
+
+### 对应处理器
++ 获取图片并改名之后存储到指定目录下
+```
+@RequestMapping(value="updateItem",method = RequestMethod.POST)
+public String updateItem(Model model, Item item, MultipartFile pictureFile) throws IOException {
+    //获取随机序列用于图片的新名字
+    String name= UUID.randomUUID().toString();
+    //获取图片的旧名字，以获取图片后缀
+    String oldName=pictureFile.getOriginalFilename();
+    String suf=oldName.substring(oldName.lastIndexOf("."));
+    //存储图片到指定路径
+    File file=new File("C:\\Users\\MHH\\Pictures\\ACG\\"+name+suf);
+    pictureFile.transferTo(file);
+    //跟新item的图片id
+    item.setPictureId(name+suf);
+    itemService.updateItem(item);
+    //包装进Model中
+    model.addAttribute("item",item);
+    model.addAttribute("msg","修改成功");
+    return "itemEdit";
+}
+```
