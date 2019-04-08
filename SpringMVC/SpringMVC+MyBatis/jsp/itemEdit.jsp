@@ -13,7 +13,7 @@
 <span>${ msg }</span>
 	<!-- 上传图片是需要指定属性 enctype="multipart/form-data" -->
 	<!-- <form id="itemForm" action="" method="post" enctype="multipart/form-data"> -->
-	<form id="itemForm"	action="${pageContext.request.contextPath }/updateItem" method="post">
+	<form id="itemForm"	action="${pageContext.request.contextPath }/updateItem" enctype="multipart/form-data" method="post">
 		<input type="hidden" name="id" value="${item.id }" /> 修改商品信息：
 		<table width="100%" border=1>
 			<tr>
@@ -24,23 +24,21 @@
 				<td>商品价格</td>
 				<td><input type="text" name="price" value="${item.price }" /></td>
 			</tr>
-			<%-- 
 			<tr>
 				<td>商品生产日期</td>
-				<td><input type="text" name="createtime"
-					value="<fmt:formatDate value="${item.createtime}" pattern="yyyy-MM-dd HH:mm:ss"/>" /></td>
+				<td><input type="text" name="createTime"
+					value="<fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" /></td>
 			</tr>
 			<tr>
 				<td>商品图片</td>
 				<td>
-					<c:if test="${item.pic !=null}">
-						<img src="/pic/${item.pic}" width=100 height=100/>
+					<c:if test="${item.pictureId !=null}">
+						<img src="/ACG/${item.pictureId}" width=100 height=100/>
 						<br/>
 					</c:if>
 					<input type="file"  name="pictureFile"/> 
 				</td>
 			</tr>
-			 --%>
 			<tr>
 				<td>商品简介</td>
 				<td><textarea rows="3" cols="30" name="detail">${item.detail }</textarea>
