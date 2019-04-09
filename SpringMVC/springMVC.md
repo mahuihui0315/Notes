@@ -351,3 +351,52 @@ public String updateItem(Model model, Item item, MultipartFile pictureFile) thro
     return "itemEdit";
 }
 ```
+
+## 使用Json
+
+### 引入jar
++ jackson-annotations
++ jackson-datebind
++ jackson-core
+    + 该包需要使用2.7.0及以上版本
+
+### 方法上添加注解
++ @ResponseBody
+```
+@RequestMapping(value = "getItemInJson")
+@ResponseBody
+public Item getItemInJson(){
+    Item item=itemService.getItemById(1);
+    return item;
+}
+```
+
+## 拦截器
+
+### 新建类实现HandlerInterceptor
+实现方法：   
+
++ boolean preHandle：controller方法执行前被执行；登陆拦截，权限验证
+   + return true：放行
+   + return false：拦截
++ void postHandler：controller方法执行后，返回ModelAndView之前；设置或者清理页面公用参数
++ void afterHandler：最后被执行；处理异常，记录日志
+
+### 核心配置文件中配置拦截器
+```
+<!-- 拦截器配置 -->
+<mvc:interceptors>
+    <mvc:interceptor>
+        <!--
+            path
+            /**：拦截所有请求，包括二级以上目录
+            /*：拦截所有请求，不包括二级以上目录
+        -->
+        <mvc:mapping path="/**"/>
+        <!-- 不拦截的请求 -->
+        <mvc:exclude-mapping path="/user/**"/>
+        <!-- 拦截器路径 -->
+        <bean class="com.springMVC.demo1.interceptor.MyInterceptor"/>
+    </mvc:interceptor>
+</mvc:interceptors>
+```
