@@ -1,91 +1,59 @@
-# DOM4J基本用法
+# XML
 
-## 简介
+## 基本作用
+1. 存储数据
+2. 配置文件
+3. 数据传输载体
 
-+ dom4j是一个Java的XML API，是jdom的升级品，用来读写XML文件的，
-具有性能优异、功能强大和极其易使用的特点
+## 文档声明
+`<?xml version="1.0" encoding="utf-8/gbk" standalone="yes/no"?>`
++ version：解析器版本
++ encoding：编码方式
+   + 本地默认编码：gbk
+   + 建议写成：utf-8
+   
+## 标签格式
++ 基本与html相同
+   + 标签可自定义
+   + 注释格式：`<!---->`
++ `<![CDATA[内部元素]]>`：内部的字符会被解析器忽略
 
-## 基本用法
-1. 获取SAX对象
-> SAXReader reader=new SAXreader();
-2. 解析指定xml文件
-> Document document=reader.read(new file("src"));
-3. 获取根元素
-> Element rootElement=document.getRootElement();
-4. 获取根元素下的子元素
-> List<Element> elements=rootElement.elements();
-5. 获取子元素的内容
-> elements.element("标签名").getText();
+## 转义字符
++ 小于<：`&lt;`
++ 大于>：`&gt;`
++ 与&：`&amp;`
++ 省略号 . ：`&apos;`
++ 引号"：`&quot;`
 
-## XPATH
-	
-### 简介
-+ xml路径语言，用于快速定位元素
+## 解析方式
 
-### 基本用法
-1. 导入jaen包
-2. 通过Xpath语法定位元素
-> A元素下的B元素=/A/B   
-> 文档中的所有B元素=//B
+### DOM
+读取全部文档内容，在内存中形成树状结构，并分为几类对象，并称为Node节点
++ document对象
++ element对象
++ attribute对象
++ text对象
 
-3. List<Element> elements=(Element) rootElement.selectSingleNode("//B");
+文档过大会有内存溢出的风险，对于小文档效率更高，且可以进行增删操作
 
-## XML约束
+### SAX
+Simple API for xml：基于事件驱动，一次读取一行，只能查询
 
-### DTD
+### API
++ jaxp：sun公司，比较繁琐
++ jdom
++ dom4j：常用API
 
-**引入方式**
-1. 引入网络DTD文件   
-`<!DOCTYPE 根标签名 PUBLIC "//DTD名/" "DTD路径">`
-2. 引入本地DTD文件   
-`<!DOCTYPE 根标签名 SYSTEM "DTD路径">`
-3. xml文件嵌套DTD   
+## 对象转XML
+### 导入lib
++ xstream
++ xpp3
+### 创建XStream对象
 ```
-<!DOCTYPE 根标签名[
-<!ELEMENT 标签名 （下级标签名）>
-<!ELEMENT 标签名 （#PCDATA）>
-]>
+//创建XStream对象
+XStream xstream=new XStream();
+//设置别名（非必需）
+xstream.alias("...",Object.class)
+//转换对象
+String xml=xstream.toXML(Object);
 ```
-    
-**书写格式**   
-
-`<!ELEMENT 标签名 （下级标签名）>`   
-
-`<!ELEMENT 标签名 （#PCDATA）>`   
-
-`<!ATTLIST 标签名 属性名 属性类型 默认值>`   
-+ 属性类型
-   + CDATA：字符数据
-   + ID：值唯一
-   + 默认值
-      + #REQUIRED：必需的
-      + #IMPLIED：可选的 
-   + 元素个数
-      + +：一个或则多个
-      + *：零个或者多个
-      + ？：零个或者一个
-### Schema
-
-**格式***
-```
-<schema xmlns="#" targetNameSpace="#" elementFormDefault="#">
-    <element name="标签名">
-        <complexType>
-            <sequence>
-                <element name="标签名">
-                </element>
-            </sequence>
-        </complexType>
-    </element>
-</schema>
-```
-+ sequence属性   
-   + maxOccurs=“#”
-      + #=数字：元素出现的最大次数
-      + #=unbounded：无限次数
-+ 名称空间
-```
-<a:name></a:name>
-<b:name></b:name>
-```
-a与b用于区分不同的schema文件
