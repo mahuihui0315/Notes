@@ -42,8 +42,8 @@
 3. xml文件嵌套DTD   
 ```
 <!DOCTYPE 根标签名[
-<!ELEMENT 标签名 （下级标签名）>
-<!ELEMENT 标签名 （#PCDATA）>
+    <!ELEMENT 标签名 （下级标签名）>
+    <!ELEMENT 标签名 （#PCDATA）>
 ]>
 ```
     
