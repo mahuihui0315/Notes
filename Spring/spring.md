@@ -2,7 +2,7 @@
 ## IOC(Inversion of Control)
 **简介：** 将对象的创建交给spring
 
-### 为什么使用ICO
+### 为什么使用IOC
 + 传统方式
 > Dao dao=new Dao();   
 可扩展性极差
