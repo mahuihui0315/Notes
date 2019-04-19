@@ -49,3 +49,18 @@ Tomcat 服务器是一个免费的开放源代码的Web 应用服务器，属于
    + ClassPath添加：%CATALINA_HOME%\lib\servlet-api.jar;   
    + Path添加：%CATALINA_HOME%\bin;%CATALINA_HOME%\lib
 3. IDEA配置：百度/Google
+
+## 项目部署到tomcat之后的乱码问题
+
+在tomcat的安装目录下的conf目录找到web.xml文件，将以下内容去掉注释（默认是被注释的）
+```
+    <filter>
+        <filter-name>setCharacterEncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <async-supported>true</async-supported>
+    </filter>
+```
