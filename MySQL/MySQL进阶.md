@@ -79,7 +79,7 @@
 + 持久性：Durability
 
 ### 隔离级别
-+ 读未提交：read uncommiteed
++ 读未提交：read uncommitted
 + 读已提交：read committed
 + 可重复读：repeatable read
 + 串行化：serializable
@@ -98,7 +98,7 @@
 > 关闭自动提交从执行语句，开始事务，直到commit或rollback，或断开连接
 
 因为长事务会占用大量资源及存储空间，因此尽量使用自动提交，并显示的开启事务；
-若重复开启提交事务操作繁琐可使用commit work and chain，提并开启新事物
+若重复开启提交事务操作繁琐可使用commit work and chain，提交并开启新事物
 
 ## 索引
 + 索引的出现是为了提高查询速度
