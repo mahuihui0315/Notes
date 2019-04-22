@@ -148,6 +148,7 @@ properties.load(is);
 服务器启动时，为每一个web程序创建一个ServletContext对象
 
 ## 下载资源
+
 ### 直接提供超链接
 ```
 //使用Tomcat默认servlet
