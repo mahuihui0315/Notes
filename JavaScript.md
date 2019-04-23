@@ -52,3 +52,8 @@ document.getElementById("demo").innerHTML="My First JavaScript Function";
 外部引入
 
 通过`<script src=""></script>`标签引入
+
+### 获取元素
+可以通过documentget.ElementByID(id)获取指定id的元素
+### 输出元素
+通过document.write("")向页面中写入元素，但若在页面加载完成后使用会覆盖页面
