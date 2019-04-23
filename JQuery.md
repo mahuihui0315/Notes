@@ -75,3 +75,168 @@ $(document).ready(function(){
 + $(selector).focus(function)：触发或将函数绑定到被选元素的获得焦点事件
 + $(selector).mouseover(function)：触发或将函数绑定到被选元素的鼠标悬停事件
 + $(selector).blur(function)：触发或将函数绑定到被选元素的失去焦点事件
+
+## jQuery效果
+
+### hide()
+单击id为hide的元素隐藏p标签
+```
+$("#hide").click(function(){
+  $("p").hide();
+})
+```
+
+### show()
+单击id为show的元素显示p标签
+```
+$("#show).click(function(){
+  $("p").show();
+})
+```
+### toggle() 
+单击button元素，显示被隐藏的p元素，隐藏被显示的p元素
+```
+$("button").click(function(){
+  $("p").toggle();
+})
+```
+
+### fadeIn()
+淡入被隐藏的元素
++ speed：反应速度，"slow"、"fast"或者毫秒
++ callback：fade动作完成后执行的函数（可省略）
+```
+$("button").click(function(){
+  $("#id").fadeIn(speed,callback);
+})
+```
+
+### fadeOut()
+同fadeIn()
+
+### fadeToggle()
+同fadeIn()
+
+### fadeTo()
++ ...
++ opacity：设置渐变的透明度，0~1之间
++ ...
+```
+$("button").click(function(){
+  $(#id).fadeTo(speed,opacity,callback);
+})
+```
+
+### slideDown()
+在元素上创建向下滑动效果
++ speed：滑动速度，"slow"、"fast"或者毫秒
++ callback：滑动结束之后调用的函数（可省略）
+```
+$("#filp").click(function(){
+  $("p").slideDown(speed,callback);
+})
+```
+
+### slideUp()
+在元素上创建向上滑动效果
+```
+$("#filp").click(function(){
+  $("p").slideUp(speed,callback);
+})
+```
+
+### animate()
+用于创建自定义动画
+
+`$(selector).animate({parameters},speed,callback)`
++ parameters：定义动画的属性
++ speed：规定动画的时长
++ callback：动画完成后调用的函数
+
+**注：** 一般来说，html元素都有一个静态位置无法移动，如需对位置进行操作需要将position属性设置为relative、fixed或者absolute
+
+例：该段代码将div标签移动到250px位置，并改变形状及透明度
+```
+<!DOCTYPE html>
+<html>
+<head>
+<script src="/jquery/jquery-1.11.1.min.js">
+</script>
+<script> 
+$(document).ready(function(){
+  $("button").click(function(){
+    $("div").animate({
+      left:'250px',
+      opacity:'0.5',
+      height:'150px',
+      width:'150px'
+    });
+  });
+});
+</script> 
+</head>
+ 
+<body>
+
+<button>开始动画</button>
+<div style="background:#98bf21;height:100px;width:100px;position:absolute;"></div>
+
+</body>
+</html>
+```
+## jQuery HTML
+jQuery 拥有可操作 HTML 元素和属性的强大方法
+
+### 获取内容
+基本语法：
+`$(selector).action()`
+
++ html()：设置或者返回元素的内容，包括html标记
++ text()：设置或者返回元素的文本内容
++ val()：设置或者返回表单字段的值
++ attr("attribute")：获取属性
+
+### 设置内容
+基本语法：
+`$(selector).action("content")`
+
++ text()：设置或返回所选元素的文本内容
++ html()：设置或返回所选元素的内容（包括 HTML 标记）
++ val()：设置或返回表单字段的值
+
+### 添加元素
+基本语法：
+`$(selector).action("content")`
+
++ append()：在被选元素的结尾插入内容
++ prepend()：在被选元素的开头插入内容
++ after()：在被选元素之后插入内容
++ before()：在被选元素之前插入内容
+
+### 删除元素
+基本语法：
+`$(selector).remove()`
++ 删除被选元素及其子元素
++ 可过滤被删除元素，例如remove(".name")删除所有class为name的元素
+
+基本语法：
+`$(selector).remove()`
++ 删除被选元素的子元素
+
+### css类
+jQuery 拥有若干进行 CSS 操作的方法
+
++ addClass()：向元素添加class属性
+```
+$("button").click(function(){
+  $("p").addClass("classname");
+})
+```
++ removeClass()：移除元素的class属性
+```
+$("button").click(function(){
+  $("p").removeClass("classname");
+})
+```
+
+## jQuery遍历
