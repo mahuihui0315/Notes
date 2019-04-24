@@ -220,7 +220,7 @@ jQuery 拥有可操作 HTML 元素和属性的强大方法
 + 可过滤被删除元素，例如remove(".name")删除所有class为name的元素
 
 基本语法：
-`$(selector).remove()`
+`$(selector).empty()`
 + 删除被选元素的子元素
 
 ### css类
