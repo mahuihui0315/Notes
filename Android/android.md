@@ -158,5 +158,13 @@ Android APP都需要我们用一个证书对应用进行数字签名，不然的
 2. 应用程序模块化：android允许多个相同签名程序在一个进程中运行，并把它们当做一个应用，因此可以将应用以模块的方式开发、部署和升级
 3. 代码或者数据共享：有相同签名的不同应用可以安全的共享数据和代码
 
+## Android4大组件
 
+### Activity
+
+### Service
+
+### Broadcast Receiver
+
+### Content Provider
 
