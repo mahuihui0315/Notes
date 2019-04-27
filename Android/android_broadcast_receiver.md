@@ -108,3 +108,94 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 ```
 至此,接收开机广播并做出响应的静态接收器注册完成
+
+## 自定义Broadcast
+
+### Normal Broadcasts
+普通广播的发送十分简单
+```
+Intent intent=new Intent("com.example.broadcasttest.MY_BROADCAST");
+sendBroadcast(intent);
+```
+再注册一个接收器,接收com.example.broadcasttest.MY_BROADCAST的广播即可
+```
+class MyBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = "MyBroadcastReceiver";
+    @Override
+    public void onReceive(Context context, Intent intent) {;
+        Log.d(TAG ,"receive broadcast");
+        Toast.makeText(context, "Received in MyBroadcastReceiver", Toast.LENGTH_SHORT).show();
+    }
+}
+```
+
+**注:** android 8.0以后禁用了大部分的静态注册的隐式广播,因此静态注册的接收器将接收不到该广播
+
+解决办法:
+
+1. 动态注册接收器
+2. 使用setComponent()指定接收器
+> intent.setComponent(new ComponentName(MainActivity.this,MyBroadcastReceiver.class));
+
+### Ordered Broadcasts
+有序广播只需在普通广播基础上稍作修改即可
+
+1. 替换发送广播的方法,第一个参数仍旧是Intent,第二个为权限相关字符串
+```
+sendOrderedBroadcast(intent,null);
+```
+2. 通过给接收器的\<intent-filter>设置android:priority属性决定接收器的优先级,数值为-1000~1000,数值越大,优先级越高
+3. 截断广播: 可以被截断是有序广播的一大特点,通过在onReceive()方法中调用abortBroadcast()即可
+
+## Local Broadcasts
+前面使用的都是系统全局级别的广播,可以被本应用之外的所有应用接收,并且也可以接收任何其他应用的广播,非常容易引起安全问题,
+因此android提供了本地广播机制,使得广播只在应用内部传播
+
+### 发送本地广播
+1. 获取LocalBroadcastManager实例
+```
+private LocalBroadcastManager localBroadcastManager;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    ...
+    localBroadcastManager=LocalBroadcastManager.getInstance(this);
+    ...
+}
+```
+2. 获取Intent并设置action
+```
+Intent intent1=new Intent("LOCAL_BROADCAST");
+```
+3. 发送本地广播
+```
+localBroadcastManager.sendBroadcast(intent1);
+```
+
+### 接收本地广播
+1. 新建LocalReceiver类继承BroadcastReceiver
+```
+class LocalReceiver extends BroadcastReceiver{
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context, "received local broadcast", Toast.LENGTH_SHORT).show();
+    }
+}
+```
+2. 获取LocalReceiver实例,并注册
+```
+intentFilter=new IntentFilter();
+intentFilter.addAction("LOCAL_BROADCAST");
+
+localReceiver=new LocalReceiver();
+localBroadcastManager.registerReceiver(localReceiver,intentFilter);
+```
+3. onDestroy()方法中注销LocalReceiver
+```
+localBroadcastManager.unregisterReceiver(localReceiver);
+```
+**注:** 本地接收器只能使用动态注册
+
+#### 本地广播的优势
+1. 广播不会离开程序,数据不容易泄露
+2. 外部广播无法进入,程序更稳定
+3. 效率更高
