@@ -230,3 +230,101 @@ android中有六大布局，分别是
 + columnCount：设置网格的列数量
 + layout_rowSpan：设置该组件纵向跨越几行
 + layout_columnSpan：设置该组件横向跨越几行
+
+## 自定义控件
+当系统所提供的控件不满足需求的时候就可以通过扩展现有的控件来自定义新的控件
+
+下面的例子自定义了一个标题栏控件
+1. 新建title.xml布局文件,包含两个button和一个text
+```
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <Button
+            android:id="@+id/title_back"
+            android:layout_gravity="center|top"
+            android:layout_margin="5dp"
+            android:text="back"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/title_text"
+            android:layout_gravity="center|top"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="Title Text"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/title_edit"
+            android:layout_gravity="center|top"
+            android:layout_margin="5sp"
+            android:text="edit"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>
+```
+2. 新建TitleLayout类,继承LinearLayout
+```
+public class TitleLayout extends LinearLayout implements View.OnClickListener{
+
+    public TitleLayout(Context context, AttributeSet attrs) {
+        super(context,attrs);
+        LayoutInflater.from(context).inflate(R.layout.title,this);
+        ...
+    }
+}
+```
+3. 在TitleLayout中为button绑定点击事件
+```
+public class TitleLayout extends LinearLayout implements View.OnClickListener{
+
+    public TitleLayout(Context context, AttributeSet attrs) {
+        ...
+        Button titleBack=findViewById(R.id.title_back);
+        Button titleEdit=findViewById(R.id.title_edit);
+
+        titleBack.setOnClickListener(this);
+        titleEdit.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.title_back:
+                ((Activity)getContext()).finish();
+                break;
+            case R.id.title_edit:
+                Toast.makeText(getContext(), "You clicked edit button", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+    }
+}
+```
+4. 在activity_main.xml文件中添加自定义组件TitleLayout
+```
+<com.mhh.customview.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+```
+5. 隐藏系统自带的标题栏
+```
+ActionBar actionBar=getSupportActionBar();
+if (actionBar!=null)
+    actionBar.hide();
+```
+
+## 重要控件ListView
+ListView允许用户通过上下滑动的方式将数据从屏幕外滚动到屏幕内,许多场合都需要使用到该控件
+
