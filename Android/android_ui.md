@@ -328,3 +328,98 @@ if (actionBar!=null)
 ## 重要控件ListView
 ListView允许用户通过上下滑动的方式将数据从屏幕外滚动到屏幕内,许多场合都需要使用到该控件
 
+### 1.引入ListView
+在activity_mian.xml文件中添加一下代码引入ListView控件
+```
+<ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+```
+### 2.创建ListView子项实例类
+本例中创一个带有图片和名字的游戏类
+```
+public class Game {
+    private String name;
+    private int imageId;
+
+    public Game(String name, int imageId){
+        this.name=name;
+        this.imageId=imageId;
+    }
+    get/set...
+}
+```
+
+### 3.创建ListView子项布局文件
+在layout文件夹下新建布局文件game_item.xml
+```
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/game_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/game_text"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+</LinearLayout>
+```
+
+### 4.为ListView创建适配器
+新建类继承ArrayAdapter,并将泛型指定为子项类
+```
+public class GameAdapter extends ArrayAdapter<Game> {
+    private int resourcedId;
+    public GameAdapter(@NonNull Context context, int resource, List<Game> objects) {
+        super(context, resource, objects);
+        resourcedId=resource;
+    }
+
+
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Game game=getItem(position);
+        View view;
+        /**
+         * convertView用于将之前加载好的布局进行缓存
+         *可以提升 程序效率
+         */
+        if (convertView==null)
+            view= LayoutInflater.from(getContext()).inflate(resourcedId,parent,false);
+        else
+            view=convertView;
+        ImageView gameImage=view.findViewById(R.id.game_image);
+        TextView gameText=view.findViewById(R.id.game_text);
+        gameImage.setImageResource(game.getImageId());
+        gameText.setText(game.getName());
+        return view;
+    }
+}
+```
+
+### 5.在activity_main中初始化ListView控件
+```
+    private List<Game> gameList=new ArrayList<>();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initGame();
+        GameAdapter adapter=new GameAdapter(MainActivity.this,R.layout.game_item,gameList);
+        ListView listView=findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+    }
+
+    public void initGame(){
+        for (int i=0;i<15;i++){
+            gameList.add(new Game("VA-11 Hall-A",R.mipmap.jill));
+        }
+    }
+```
