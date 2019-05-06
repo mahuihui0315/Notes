@@ -143,3 +143,95 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
 ```
 
 ## 自定义内容提供器
+1. 新建一个类继承ContentProvider
+
+示例代码:
+```
+public class DatabaseProvider extends ContentProvider {
+    public DatabaseProvider() {
+    }
+
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        return -1;
+    }
+
+    @Override
+    public String getType(Uri uri) {
+        return null;
+    }
+
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        return null;
+    }
+
+    @Override
+    public boolean onCreate() {
+        return false;
+    }
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return null;
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        return -1;
+    }
+}
+```
+2. 使用UriMatcher实现匹配内容URI的功能
+
+UriMatcher提供了一个addUri()方法,接收三个参数: authority,path和一个自定义代码, 当调用
+UriMatcher的match()方法传入一个URI时, 会返回一个匹配的自定义代码, 通过这种方式可以控制
+外部应用访问的资源, 只有被提供自定义代码的资源才会被访问
+
+示例代码:
+```
+private static final int BOOK_DIR=0;
+private static final int BOOK_ITEM=1;
+private static final int CATEGORY_DIR=2;
+private static final int CATEGORY_ITEM=3;
+private static final String AUTHORITY="com.mhh.sqlitedemo.provider";
+private static UriMatcher uriMatcher;
+
+static{
+    uriMatcher=new UriMatcher(UriMatcher.NO_MATCH);
+    uriMatcher.addURI(AUTHORITY,"book",BOOK_DIR);
+    uriMatcher.addURI(AUTHORITY,"book/#",BOOK_ITEM);
+    uriMatcher.addURI(AUTHORITY,"category",CATEGORY_DIR);
+    uriMatcher.addURI(AUTHORITY,"category/#",CATEGORY_ITEM);
+}
+```
+3. 以数据查询为例, 只有匹配的URI才能访问数据
+
+示例代码:
+```
+@Override
+public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    database=databaseHelper.getReadableDatabase();
+    Cursor cursor=null;
+    switch(uriMatcher.match(uri)){
+        case BOOK_DIR:
+            cursor=database.query("book",projection,selection,selectionArgs,null,null,sortOrder);
+            break;
+        case BOOK_ITEM:
+            cursor=database.query("book",projection,"id=?",new String[]{uri.getPathSegments().get(1)},
+                    null,null,sortOrder);
+            break;
+        case CATEGORY_DIR:
+            cursor=database.query("category",projection,selection,selectionArgs,null,null,sortOrder);
+            break;
+        case CATEGORY_ITEM:
+            cursor=database.query("category",projection,"id=?",new String[]{uri.getPathSegments().get(1)},
+                    null,null,sortOrder);
+            break;
+        default:
+            break;
+    }
+    return cursor;
+}
+```
+
