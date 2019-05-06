@@ -43,3 +43,30 @@ layout文件夹下的xml布局文件无法进行视图预览
 
 #### 解决方法
 选择对应view单击预览视图上方的Infer constraints按钮，添加constraint
+
+## 视图调用setOnTouchListener
+自定义一个view类，实例化并调用setOnTouchListener时报警告
+> If a View that overrides onTouchEvent or uses an OnTouchListener does not also implement performClick and call it when clicks are detected,
+the View may not handle accessibility actions properly. Logic handling the click actions should ideally be placed in
+View#performClick as some accessibility services invoke performClick when a click action should occur.
+
+### 原因
+创建自定义View类时没有重写performClick方法，但是调用setOnTouchListener时需要调用performClick方法
+而重写onTouch方法可能会屏蔽performClick方法，因此报出警告
+
+### 解决方法
+在自定义View类中重写performClick方法，并在发生单击事件时使用view调用该方法
+
+## MIUI系统Toast显示应用名问题
+MIUI系统下直接使用Toast时, 会在提示信息之前加上应用名
+例如:
+`Toast.makeText(context,"Create succeeded", Toast.LENGTH_SHORT)`
+
+### 解决方法
+将输出信息设置为null,之后调用setText()方法重新设置输出信息
+示例代码:
+```
+Toast toast=Toast.makeText(context, null, Toast.LENGTH_SHORT);
+toast.setText("Create succeeded");
+toast.show();
+```
