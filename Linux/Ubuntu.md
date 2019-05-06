@@ -88,7 +88,27 @@ $ ./shellTest.sh
 
 ## find
 寻找指定指定前缀的文件
-> find 路径 -name "filename*"
+> find path -name "filename*"
+
+寻找指定指定前缀的文件,忽略大小写
+> find path -iname "filename*"
+
+寻找在过去的n分钟被读取的文件
+> find path -amin n
+
+寻找在过去的n分钟被修改的文件
+> find path -cmin n
+
+## grep
+在文件中查找字符串
+> grep -i "xxx" target_file
+
+## sort
+以升序对文件内容进行排序
+> sort target_file
+
+以降序对文件进行排序
+> 
 
 ## tar
 文件压缩命令
@@ -114,8 +134,10 @@ x：可执行，值为1
 -：无权限，值为0
 
 + 权限更改
-> chmod u-rwx   
-chmod g-rwx   
+> chmod abc filename   
+a: User   
+b: Group   
+c: Other   
 chmod 777 文件/文件夹：添加 所有权限    
 ## man/help
 
@@ -126,83 +148,6 @@ $ help 内部项目
 ## Shared folder
 进入VMware的共享文件夹
 > $ cd /mnt/hgfs/
-
-## JDK Configuration
-配置jdk
-> 下载linux版本jdk并解压到需要的文件夹   
-执行命令，打开.bashrc  
-$ sudo gedit /.bashrc   
-添加以下内容到最后面   
-> ```
-> # The PATH of jdk1.8.0_201   
-> export JAVA_HOME=jdk的解压路径   
-> export JRE_HOME=${JAVA_HOME}/jre   
-> export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib   
-> export PATH=${JAVA_HOME}/bin:$PATH
-> ```   
-> 退出并保存   
-执行命令，使配置生效生效   
-$ source /.bashrc   
-> 查看是否配置成功   
-$ java -version
-
-## MySQL Installation
-
-卸载旧版本MySQL	
-+ 执行卸载语句
-> $ sudo apt autoremove --purge mysql-server   
-$ sudo apt remove mysql-common
-
-+ 清除数据
-> $ dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 
-
-安装新版MySQL
-+ 在MySQL官网下载最新版deb文件
-> $ sudo dpkg -i mysql-apt-config_xxx.deb   
-+ 更新软件库
-> $ sudo apt update
-+ 安装MySQL服务器
-> $ sudo apt install mysql-server
-
-重设默认密码
-+ 寻找debian.cnf文件
-> $ sudo vim /etc/mysql/debian.cnf   
-+ 记录默认用户名及密码，并登陆mysql，执行以下语句
-> show databases;   
-use mysql;   
-update user set authentication_string=PASSWORD("自定义密码") where user='root';   
-update user set plugin="mysql_native_password";   
-flush privileges;   
-quit;   
-+ 重启MySQL
-> $ /etc/init.d/mysql restart
-+ 使用修改后的root用户名及密码登陆
-
-## Tomcat Installation
-
-安装Tomcat
-+ Tomcat官网下载需要的版本，并解压
-> $ sudo tar -zxvf apache-tomcat-xxx.tar.gz
-+ 进入安装目录下的bin目录下执行以下语句
-> $ sudo vim startup.sh   
-> 若拒绝进入，则修改文件夹权限   
->> $ sudo chmod 755 -R apache-tomcat-xxx
-+ 打开文件之后在最后一行之前添加以下内容
-> ```
-> #set java environment
-> export JAVA_HOME=xxx
-> export JRE_HOME=${JAVA_HOME}/jre
-> export CLASSPATH=.:%{JAVA_HOME}/lib:%{JRE_HOME}/lib
-> export PATH=${JAVA_HOME}/bin:$PATH
-> 
-> #tomcat
-> export TOMCAT_HOME=xxx/apache-tomcat-xxx
-> ```
-+ 保存并退出
-+ 执行语句开启Tomcat(bin)
-> sudo ./startup
-
-+ 在浏览器访问localhost：8080验证是否成功
 
 ## Change sources.list
 Ubuntu默认是国外源，下载速度太慢，可以更改为国内源
@@ -215,3 +160,54 @@ Ubuntu默认是国外源，下载速度太慢，可以更改为国内源
 + 更新软件
 
 > $ sudo apt upgrade
+
+## 更换主机名
+1. 修改hostname文件
+> $ sudo vim etc/hostname
+2. 修改hosts文件
+> $ sudo vim etc/hosts
+
+## 查看系统的CPU信息
+1. CPU个数
+> cat /proc/cpuinfo|grep -c 'physical id'
+2. 每个CPU的核数
+> cat /proc/cpuinfo|grep -c 'processor'
+
+## 查看系统负载
+1. $ w
+2. $ uptime
+load average即表示系统负载, 后面的三个数值分别是1,5,15分钟内的系统平均负载
+
+## 查看虚拟内存的统计信息
++ $ vmstat
+   + r: running,当前任务数量
+   + b: blocked,被阻塞的任务数量
+   + si: swap input,从交换分区读入内存的数据量
+   + so: swap output,从内存写入交换分区的数据量
+   + bi: block input,从磁盘读入内存的数据量
+   + bo: block output,从内存写入磁盘的数据量
+
+## buffer和cache的区别
++ buffer: 将需要写入磁盘的数据先缓存到buffer区,在cpu不忙的时候仔写入磁盘
++ cache: 将需要用的数据提前从磁盘中存入cache,cpu需要用到的时候直接从cache中获取
+
+## 查看系统资源占用情况
++ $ top
+
+## 查看系统当前进程
+1. $ ps -aux
+2. $ ps -elf
+
+STAT:    
+D: 无法中断的休眠状态（通常 IO 的进程）   
+R: 正在运行可中在队列中可过行的   
+S: 处于休眠状态   
+T: 停止或被追踪   
+X: 死掉的进程   
+Z: 僵尸进程
+
+## 查看系统开启的端口
++ $ netstat -lnp
+
+## 查看网络连接状态
++ $ netstat -an
