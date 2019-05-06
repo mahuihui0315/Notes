@@ -98,3 +98,47 @@ String password=getString("password","");
 ```
 
 ## SQLite数据库存储
+SQLite时android内置的轻量级关系型数据库, 运算速度很快, 占用资源少, 因此很适合移动设备使用
+
+### 创建及升级数据库
+android提供了SQLiteOpenHelper的类用于创建和升级数据库, 需要自定义类并继承该类
+
+示例代码:
+```
+public class MyDatabaseHelper extends SQLiteOpenHelper {
+
+    public static final String CREATE_BOOK="create table book("
+            + "id integer primary key autoincrement,"
+            + "author text,"
+            + "prices real, "
+            + "pages integer,"
+            + "name text )";
+
+    public static final String CREATE_CATEGORY="create table category("
+            + "id integer primary key autoincrement,"
+            + "category_name text,"
+            + "category_code integer)";
+    private Context context;
+
+    public MyDatabaseHelper(Context context,  String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+        this.context=context;
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_BOOK);
+        db.execSQL(CREATE_CATEGORY);
+        Toast toast=Toast.makeText(context, null, Toast.LENGTH_SHORT);
+        toast.setText("Create succeeded");
+        toast.show();
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("drop table if exists book");
+        db.execSQL("drop table if exists category");
+        onCreate(db);
+    }
+}
+```
