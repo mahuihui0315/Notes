@@ -73,7 +73,7 @@
 ## 事务隔离
 
 ### 事务特性
-+ 原子性：Automicity
++ 原子性：Atomicity
 + 一致性：Consistency
 + 隔离性：Isolation
 + 持久性：Durability
