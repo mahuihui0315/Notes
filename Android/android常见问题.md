@@ -70,3 +70,28 @@ Toast toast=Toast.makeText(context, null, Toast.LENGTH_SHORT);
 toast.setText("Create succeeded");
 toast.show();
 ```
+
+## java.lang.ClassNotFoundException: Didn't find class "android.view.View$OnUnhandledKeyEventListener" on path: DexPathList
+
+### 原因
+程序使用的API高于模拟器或者手机的API版本
+
+### 解决方法
+更换符合程序API的模拟器或者手机再次运行
+
+## Notification在Android8.0不生效问题
+
+### 原因
+Android8.0之后的NotificationCompat.Builder()需要一个额外的参数channelId
+
+示例代码:
+```
+NotificationChannel channel= null;
+//android O,即android 8.0以上版本时需要channel来使用NotificationCompat.Builder()
+if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+    String channelId="channel_1";
+    String channelName="Notification";
+    manager.createNotificationChannel(new NotificationChannel(channelId,channelName, NotificationManager.IMPORTANCE_HIGH));
+}
+Notification notification=new NotificationCompat.Builder(this,"channel_1")...;
+```
