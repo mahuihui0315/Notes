@@ -14,7 +14,7 @@
 > $ cd /   
 
 回到home目录   
-> $ cd    
+> $ cd ~   
 
 上一级目录
 > $ cd ..
@@ -26,7 +26,7 @@ $ mkdir -p /文件夹名/文件夹名
 
 ## remove directory and file
 
-> $ rmdir 文件夹名（必须未空）   
+> $ rmdir 文件夹名（必须为空）   
 $ rm 文件名   
 $ rm -rf 文件夹名
 
@@ -50,6 +50,24 @@ $ mkdir test
 
 复制文件夹到目标路径   
 > $ cp -rf 源路径 目标路径
+
+### 远程复制
++ $ scp: 即secure copy, 通过该命令可以将文件copy到远程服务器
+
+#### 复制文件到远程服务器
+基本格式: $ scp [local path] [filename] [hostname]@[ip address]:[remote path]
+
+例: 复制一个txt文件到远程服务器
+1. 执行命令: $ scp /home/administrator/news.txt root@192.xxx.x.xxx:.etc/squid
+2. 弹出提示: Are you want to continue connecting(yes/no)?
+3. 弹出密码输入提示
+4. 输入密码,回车,文件开始传输,并显示相关信息
+
+#### 重远程服务器复制文件
+基本格式: $ scp remote@[ip address]:[remote path][filename] [local path]
+
+例:复制一个.sh脚本文件
+1. 执行命令: $ scp remote@www.abc.com:/usr/local/sin.sh /home/administrator
 
 ## move
 移动文件
@@ -87,23 +105,37 @@ $ sudo chmod 777 shellTest.sh
 $ ./shellTest.sh
 
 ## find
+
+### 查找文件
+
 寻找指定指定前缀的文件
-> find path -name "filename*"
+> find [path] -name "filename*"
 
 寻找指定指定前缀的文件,忽略大小写
-> find path -iname "filename*"
+> find [path] -iname "filename*"
 
 寻找在过去的n分钟被读取的文件
-> find path -amin n
+> find [path] -amin n
 
 寻找在过去的n分钟被修改的文件
-> find path -cmin n
+> find [path] -cmin n
 
+查找空文件及空文件夹
+> find [path] -empty
+
+### 查找文件夹
+
+ 查找指定路径及文件名的文件夹
+ > find [path] -type d -name "directoryname"
+ 
 ## grep
 在文件中查找字符串
 > grep -i "xxx" target_file
 
 ## sort
+读取每一行的输入, 并按照指定的分隔符划分字段并排序, 有多种排序方式, 默认为字符集排序   
+基本格式: sort [option] [filename]
+
 以升序对文件内容进行排序
 > sort target_file
 
@@ -195,16 +227,43 @@ load average即表示系统负载, 后面的三个数值分别是1,5,15分钟内
 + $ top
 
 ## 查看系统当前进程
-1. $ ps -aux
-2. $ ps -elf
++ $ ps: 用于查看当前进程
 
-STAT:    
+可以通过grep查看特定进程, 例如: ps -ef|grep java, 查看所有进程里CMD是java的进程信息
+   
++ ps命令的参数
+1. -e: 显示所有进程, 环境变量
+2. -f: 全格式显示
+3. -h: 不显示标题
+4. -l: 长格式
+5. -w: 宽输出
+6. a: 显示终端上的所有进程, 包括其他用户进程
+7. r: 显示正在运行的进程
+8. u: 查看进程所有者及其他信息
+
++ $ top: 以CPU占用率列出进程
+
++ 进程状态: STAT    
 D: 无法中断的休眠状态（通常 IO 的进程）   
 R: 正在运行可中在队列中可过行的   
 S: 处于休眠状态   
 T: 停止或被追踪   
 X: 死掉的进程   
 Z: 僵尸进程
+
+
+## 关闭进程
++ kill: 用于终止进程
+
+每个进程都有一个唯一的PID(Process Identity), 可以通过pid或者进程名称来终止进程   
+格式: kill [pid]
+
++ kill的命令参数
+1. kill -STOP [pid]: 停止一个进程, 而不是销毁它
+2. kill -CONT [pid]: 重新开始一个停止的进程
+3. kill -KILL [pid]: 强制停止进程, 而且不实施清理
+4. kill -9 [pid]: 强制终止进程
+
 
 ## 查看系统开启的端口
 + $ netstat -lnp
