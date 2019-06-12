@@ -45,7 +45,7 @@ Linux的shell种类很多, 最常用的为bash.
 2. 环境变量：所有程序可用，包括shell启动的程序，也可以使用shell脚本定义环境变量
 3. shell变量：由shell程序设定的特殊变量，有一部分是环境变量，有一部分是局部变量
 
-## shell字符串
+## Shell字符串
 字符串是shell编程中最常用的数据类型，可以使用单引号，双引号或者不用引号
 
 ### 单引号
@@ -59,3 +59,51 @@ Linux的shell种类很多, 最常用的为bash.
 ### 字符串操作
 1. 获取长度：echo ${#字符串名}
 2. 提取字符串：echo ${字符串名:1:4}，从索引1开始提取4个字符
+3. 拼接字符串："xxx"$字符串名"xxx"，"xxx${字符串名}xxx"
+
+## Shell数组
+使用圆括号来表示素组，使用空格来分割元素
+例：ArrayName=(value0 value1 value2 ...)
+
+也可单独定义各个元素
+例：
+ArrayName[0]=value0
+ArrayName[1]=value1
+
+### 数组操作
+1. 读取一个元素：value=${ArrayName[index]}
+2. 读取所有元素：echo ${ArrayName[@]}
+3. 获取数组长度：length=${#ArrayName[@]}或者${#ArrayName[*]}
+4. 获取单个元素的长度：length=${#ArrayName[index]}
+
+
+## Shell注释
+1. 单行注释：#
+2. 多行注释：   
+:<<EOF   
+注释内容   
+EOF
+
+## Shell传递参数
+可以在执行Shell脚本时向脚本传递参数，脚本内获取参数的格式为：$n
+n为数字，代表传入参数的顺序，$0为文件名，$1为第一个参数，依次增加
+
+实例：
+```
+#!/bin/bash
+
+echo "Shell Arguments Input Test";
+echo "Name of executed file: $0";
+echo "First argument: $1";
+echo "Second argument: $2";
+echo "Third argument: $3";
+```
+
+### 其他的参数处理字符
+1. `$#`：传递到脚本的参数个数
+2. `$*`：以字符串的形式显示所有传递的参数
+3. `$$`：脚本运行的当前进程号
+4. `$!`：后台运行的最后一个进程的ID
+5. `$@`：显示所有传递的参数
+6. `$_`：显示shell使用的当前选项
+7. `$?`：显示最后命令的退出状态，0表示没有错误
