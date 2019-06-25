@@ -146,3 +146,19 @@ echo "Third argument: $3";
 3. -z：检测字符串长度是否为0，是0则返回true
 4. -n：检测字符串长度是否不为0，不是0则返回true
 5. $：检测字符串是否为空，不为空返回true
+
+### 文件测试运算符
+对文件进行相应判断，符合条件则返回true，基本格式：\[ 运算符 $文件名 ]
+01. -b filename：检测文件是否为块设备文件
+02. -c filename：检测文件是否为字符设备文件
+03. -d filename：检测文件是否为目录
+04. -f filename：检测文件是否为普通文件
+05. -g filename：检测文件是否设置了SGID位
+06. -k filename：检测文件是否设置了粘着位（Sticky Bit）
+07. -p filename：检测文件是否有名管道
+08. -u filename：检测文件是否设置了SUID位
+09. -r filename：检测文件是否可读
+10. -w filename：检测文件是否可写
+11. -x filename：检测文件是否可执行
+12. -s filename：检测文件是否不为空
+13. -e filename：检测文件是否存在
