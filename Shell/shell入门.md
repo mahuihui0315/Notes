@@ -162,3 +162,20 @@ echo "Third argument: $3";
 11. -x filename：检测文件是否可执行
 12. -s filename：检测文件是否不为空
 13. -e filename：检测文件是否存在
+
+### Shell echo命令
+1. 显示普通字符串：echo "string"，双引号可以省略
+2. 显示转义字符：echo "\"string\""
+3. 显示变量：
+read命令可以从标准输入中读取一行，并把输入行的值赋予指定的shell变量，
+以下代码接收一个输入变量并打印出来
+```
+#!/bin/bash
+read name
+echo "$name"
+````
+4. 显示换行：echo -e "\n"，-e表示开启转义
+5. 显示不换行：echo -e "\c"
+6. 打印结果到指定的文件：echo "string" > filename
+7. 原样输出字符串：echo '$name\"'，直接输出$name\"，既不读取变量也不转义字符
+8. 显示命令执行结果：echo `date`，使用反引号，打印当前时间
